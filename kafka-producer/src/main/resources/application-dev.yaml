@@ -3,7 +3,7 @@ spring:
     name: kafka-producer
 
   kafka:
-    bootstrap-servers: kafka:29092
+    bootstrap-servers: localhost:9092
 
 topics:
   client-name: client
