@@ -3,6 +3,8 @@ package com.godeltech.kafkaproducer.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godeltech.kafkaproducer.dto.Client;
 import com.godeltech.kafkaproducer.enums.KafkaTopic;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/clients")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Client api")
 public class ClientController {
     private final KafkaProducer<Long, String> kafkaProducer;
     private final ObjectMapper objectMapper;
@@ -27,6 +30,7 @@ public class ClientController {
 
     @PostMapping
     @SneakyThrows
+    @Operation(summary = "Client creation")
     public void createClient(@RequestBody @Valid Client client) {
         log.info("creating client: {}", client);
         ProducerRecord<Long, String> producerRecord = new ProducerRecord<>(topicNames.get(KafkaTopic.CLIENT.getName()),

@@ -3,6 +3,8 @@ package com.godeltech.kafkaproducer.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godeltech.kafkaproducer.dto.Transaction;
 import com.godeltech.kafkaproducer.enums.KafkaTopic;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Transaction api")
 public class TransactionController {
     private final KafkaProducer<Long, String> kafkaProducer;
     private final ObjectMapper objectMapper;
@@ -27,6 +30,7 @@ public class TransactionController {
 
     @PostMapping
     @SneakyThrows
+    @Operation(summary = "Transaction creation")
     public void createTransaction(@RequestBody @Valid Transaction transaction) {
         log.info("creating transaction: {}", transaction);
         ProducerRecord<Long, String> producerRecord = new ProducerRecord<>(topicNames.get(KafkaTopic.TRANSACTION.getName()),
