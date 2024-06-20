@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: kafka-consumer
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password1
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+server:
+  port: 8081
+topics:
+  client-name: client
+  transaction-name: transaction

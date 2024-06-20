@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: s.lebiadzko
+      changes:
+        - createTable:
+            tableName: clients
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false

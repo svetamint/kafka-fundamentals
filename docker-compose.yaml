@@ -58,3 +58,26 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: 'kafka:9092'
     ports:
       - "8080:8080"
+
+  postgres_db:
+    image: postgres:latest
+    container_name: app_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password1
+    ports:
+      - '5432:5432'
+
+  kafka-consumer:
+    image: kafka-consumer:latest
+    build:
+      context: ./kafka-consumer
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+      - postgres_db
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: 'kafka:9092'
+    ports:
+      - "8081:8081"
