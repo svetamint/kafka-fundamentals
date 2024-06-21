@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: kafka-producer
+
+  kafka:
+    bootstrap-servers: kafka:29092
+
+topics:
+  client-name: client
+  transaction-name: transaction
