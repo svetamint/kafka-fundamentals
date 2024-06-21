@@ -163,6 +163,7 @@ class TransactionMessageClientTest extends Specification {
             def actualTransaction = transactionRepository.findById(transaction.clientId)
             actualTransaction
             actualTransaction.get().client.id == transaction.clientId
+            actualTransaction.get().client.email == "sometest@email.com"
             actualTransaction.get().cost == transaction.price * transaction.quantity
         and:
             def actualClient = clientRepository.findById(transaction.clientId)

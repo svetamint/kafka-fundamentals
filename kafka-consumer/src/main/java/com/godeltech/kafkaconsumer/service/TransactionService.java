@@ -24,16 +24,17 @@ public class TransactionService {
     public Transaction save(TransactionDto transactionDto) {
         Long clientId = transactionDto.getClientId();
         log.info("Trying to store transaction with client id = {}", clientId);
-        if(!clientRepository.existsById(clientId)) {
-            clientRepository.save(dummyClient(clientId));
-        }
-        return transactionRepository.save(transactionMapper.toTransaction(transactionDto));
+        Transaction transaction = transactionMapper.toTransaction(transactionDto);
+        transaction.setClient(getClient(clientId));
+        return transactionRepository.save(transaction);
     }
 
-    private Client dummyClient(Long id) {
-        return Client.builder()
+    private Client getClient(Long id) {
+        Client dummyClient = Client.builder()
                 .id(id)
                 .email(DUMMY_EMAIL)
                 .build();
+        return clientRepository.findById(id)
+                .orElseGet(() -> clientRepository.save(dummyClient));
     }
 }
