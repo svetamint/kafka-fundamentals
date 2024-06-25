@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: kafka-consumer
+  datasource:
+    url: jdbc:postgresql://postgres_db:5432/postgres
+    username: postgres
+    password: password1
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      auto-offset-reset: earliest
+      group-id: group-test-id
+server:
+  port: 8081
+topics:
+  client-name: client
+  transaction-name: transaction
+  dlq-name: dlq

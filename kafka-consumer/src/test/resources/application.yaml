@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+  profiles:
+    active: test
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: group-test-id
+topics:
+  client-name: client
+  transaction-name: transaction
+  dlq-name: dlq

@@ -36,6 +36,7 @@ services:
       echo -e 'Creating kafka topics...'
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic client --replication-factor 1 --partitions 1
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transaction --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic dlq --replication-factor 1 --partitions 1
       "
       
   kafka-ui:
@@ -55,6 +56,29 @@ services:
     depends_on:
       - kafka
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: 'kafka:9092'
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     ports:
       - "8080:8080"
+
+  postgres_db:
+    image: postgres:latest
+    container_name: app_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password1
+    ports:
+      - '5432:5432'
+
+  kafka-consumer:
+    build:
+      context: ./kafka-consumer
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+      - postgres_db
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/postgres
+    ports:
+      - "8081:8081"
