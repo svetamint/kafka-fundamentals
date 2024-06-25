@@ -55,7 +55,7 @@ services:
     depends_on:
       - kafka
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: 'kafka:9092'
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     ports:
       - "8080:8080"
 
@@ -76,5 +76,8 @@ services:
     depends_on:
       - kafka
       - postgres_db
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/postgres
     ports:
       - "8081:8081"
