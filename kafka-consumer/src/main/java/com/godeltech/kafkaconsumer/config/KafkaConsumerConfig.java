@@ -20,6 +20,12 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    @Value("${spring.kafka.consumer.auto-offset-reset}")
+    private String autoOffsetReset;
+
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
+
     @Bean
     public KafkaConsumer<Long, String> clientConsumer() {
         return new KafkaConsumer<>(getProperties());
@@ -35,8 +41,8 @@ public class KafkaConsumerConfig {
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(GROUP_ID_CONFIG, "group-test-id");
+        props.put(AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
+        props.put(GROUP_ID_CONFIG, groupId);
         return props;
     }
 }

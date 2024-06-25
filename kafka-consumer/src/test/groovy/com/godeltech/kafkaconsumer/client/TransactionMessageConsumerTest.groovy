@@ -36,14 +36,14 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 @SpringBootTest(classes = KafkaConsumerApplication, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = KafkaTestContainersConfiguration)
 @Testcontainers
-class TransactionMessageClientTest extends Specification {
+class TransactionMessageConsumerTest extends Specification {
     private static final String TRANSACTION_TOPIC = "transaction"
     private static final String DB_NAME = "postgres"
     private static final String DB_USER = "test_user"
     private static final String DB_PASSWORD = "test123"
 
     @Autowired
-    TransactionMessageClient transactionMessageClient
+    TransactionMessageConsumer transactionMessageConsumer
 
     @Autowired
     TransactionRepository transactionRepository
@@ -120,7 +120,7 @@ class TransactionMessageClientTest extends Specification {
             TimeUnit.SECONDS.sleep(5)
             def executor = Executors.newSingleThreadExecutor()
             def future = executor.submit({
-                transactionMessageClient.processTransaction()
+                transactionMessageConsumer.processTransaction()
             })
             TimeUnit.SECONDS.sleep(10)
             future.cancel(true)
@@ -155,7 +155,7 @@ class TransactionMessageClientTest extends Specification {
             TimeUnit.SECONDS.sleep(5)
             def executor = Executors.newSingleThreadExecutor()
             def future = executor.submit({
-                transactionMessageClient.processTransaction()
+                transactionMessageConsumer.processTransaction()
             })
             TimeUnit.SECONDS.sleep(10)
             future.cancel(true)

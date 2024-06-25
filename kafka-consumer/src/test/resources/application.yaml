@@ -9,6 +9,10 @@ spring:
     enabled: true
   profiles:
     active: test
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: group-test-id
 topics:
   client-name: client
   transaction-name: transaction

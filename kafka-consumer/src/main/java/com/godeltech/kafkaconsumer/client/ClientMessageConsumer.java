@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ClientMessageClient {
+public class ClientMessageConsumer {
     @Value("${topics.client-name}")
     private String topic;
     private final KafkaConsumer<Long, String> clientConsumer;
@@ -27,11 +27,13 @@ public class ClientMessageClient {
         try {
             clientConsumer.subscribe(List.of(topic));
             while (true) {
-                clientConsumer.poll(Duration.ofSeconds(10))
-                        .forEach(record -> clientService.save(toClientDto(record.value())));
+                try {
+                    clientConsumer.poll(Duration.ofSeconds(10))
+                            .forEach(record -> clientService.save(toClientDto(record.value())));
+                } catch (Exception exception) {
+                    log.error("Unexpected error: {}", exception.getMessage());
+                }
             }
-        } catch (Exception exception) {
-            log.error("Unexpected error: {}", exception.getMessage());
         } finally {
             clientConsumer.close();
         }

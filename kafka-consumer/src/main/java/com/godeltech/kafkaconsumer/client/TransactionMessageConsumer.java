@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TransactionMessageClient {
+public class TransactionMessageConsumer {
     @Value("${topics.transaction-name}")
     private String topic;
     private final KafkaConsumer<Long, String> transactionConsumer;
@@ -27,11 +27,13 @@ public class TransactionMessageClient {
         try {
             transactionConsumer.subscribe(List.of(topic));
             while (true) {
-                transactionConsumer.poll(Duration.ofSeconds(10))
-                        .forEach(record -> transactionService.save(toTransactionDto(record.value())));
+                try {
+                    transactionConsumer.poll(Duration.ofSeconds(10))
+                            .forEach(record -> transactionService.save(toTransactionDto(record.value())));
+                } catch (Exception exception) {
+                    log.error("Unexpected error: {}", exception.getMessage());
+                }
             }
-        } catch (Exception exception) {
-            log.error("Unexpected error: {}", exception.getMessage());
         } finally {
             transactionConsumer.close();
         }

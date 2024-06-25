@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.LongSerializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
@@ -31,7 +32,7 @@ import static org.apache.kafka.clients.producer.ProducerConfig.*
 @ContextConfiguration(classes = KafkaTestContainersConfiguration)
 @Testcontainers
 @DirtiesContext
-class ClientMessageClientTest extends Specification {
+class ClientMessageConsumerTest extends Specification {
 
     private static final String CLIENT_TOPIC = "client"
     private static final String DB_NAME = "postgres"
@@ -39,7 +40,7 @@ class ClientMessageClientTest extends Specification {
     private static final String DB_PASSWORD = "test123"
 
     @Autowired
-    ClientMessageClient clientMessageClient
+    ClientMessageConsumer clientMessageConsumer
 
     @Autowired
     ClientRepository clientRepository
@@ -107,7 +108,7 @@ class ClientMessageClientTest extends Specification {
             TimeUnit.SECONDS.sleep(2)
             def executor = Executors.newSingleThreadExecutor()
             def future = executor.submit({
-                clientMessageClient.processClient()
+                clientMessageConsumer.processClient()
             })
             TimeUnit.SECONDS.sleep(5)
             future.cancel(true)
