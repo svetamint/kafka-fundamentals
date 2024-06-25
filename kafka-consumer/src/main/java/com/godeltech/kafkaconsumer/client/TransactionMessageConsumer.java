@@ -2,6 +2,7 @@ package com.godeltech.kafkaconsumer.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godeltech.kafkaconsumer.dto.TransactionDto;
+import com.godeltech.kafkaconsumer.service.DeadLetterQueueProcessor;
 import com.godeltech.kafkaconsumer.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,6 +23,7 @@ public class TransactionMessageConsumer {
     private final KafkaConsumer<Long, String> transactionConsumer;
     private final ObjectMapper objectMapper;
     private final TransactionService transactionService;
+    private final DeadLetterQueueProcessor deadLetterQueueProcessor;
 
     public void processTransaction() {
         try {
@@ -29,7 +31,14 @@ public class TransactionMessageConsumer {
             while (true) {
                 try {
                     transactionConsumer.poll(Duration.ofSeconds(10))
-                            .forEach(record -> transactionService.save(toTransactionDto(record.value())));
+                            .forEach(record -> {
+                                try {
+                                    transactionService.save(toTransactionDto(record.value()));
+                                } catch (Exception e) {
+                                    log.error("Error processing record: {}, sending to DLQ", record, e);
+                                    deadLetterQueueProcessor.sendToDlq(record, e);
+                                }
+                            });
                 } catch (Exception exception) {
                     log.error("Unexpected error: {}", exception.getMessage());
                 }

@@ -16,3 +16,4 @@ spring:
 topics:
   client-name: client
   transaction-name: transaction
+  dlq-name: dlq

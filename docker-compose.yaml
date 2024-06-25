@@ -36,6 +36,7 @@ services:
       echo -e 'Creating kafka topics...'
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic client --replication-factor 1 --partitions 1
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transaction --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic dlq --replication-factor 1 --partitions 1
       "
       
   kafka-ui:
